@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
-import psycopg2
 import sqlite3 as sql
 
 
