@@ -26,17 +26,36 @@ conn = sql.connect("test.sqlite")
 print("Opened database successfully")
 
 
-@app.route('/')
-def home():
+def listings():
     con = sql.connect("test.sqlite")
     # con.row_factory = sql.Row
 
     cur = con.cursor()
     cur.execute("select * from calgary")
 
-    rows = cur.fetchall()
+    list_data = cur.fetchall()
+    # print(rows)
+    return list_data
+
+
+@app.route('/')
+def home():
+    rows = listings()
     # print(rows)
     return render_template("index.html", row=[i for i in rows])
+
+
+# @app.route('/')
+# def home():
+#     con = sql.connect("test.sqlite")
+#     # con.row_factory = sql.Row
+#
+#     cur = con.cursor()
+#     cur.execute("select * from calgary")
+#
+#     rows = cur.fetchall()
+#     # print(rows)
+#     return render_template("index.html", row=[i for i in rows])
 
 
 if __name__ == '__main__':
