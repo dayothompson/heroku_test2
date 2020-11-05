@@ -1,7 +1,6 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-import sqlite3 as sql
-
+import psycopg2
 
 
 app = Flask(__name__)
@@ -12,35 +11,38 @@ db = SQLAlchemy()
 
 
 # connect to the db
-# con = psycopg2.connect(
-#             host="localhost",
-#             database="realestate_db",
-#             user="postgres",
-#             password="123"
-# )
+con = psycopg2.connect(
+            host="ec2-100-25-100-81.compute-1.amazonaws.com",
+            database="dd84gatn2dg7pv",
+            user="gtqpiclsgecqkw",
+            password="793202fe1da2aa142deb488d82115a6d2e7991946b60c581838fb932dca4ec73"
+)
 
 
 # connect to db
-conn = sql.connect("test.sqlite")
-print("Opened database successfully")
+# conn = sql.connect("test.sqlite")
+# print("Opened database successfully")
 
 
 def listings():
-    con = sql.connect("test.sqlite")
+    # con = sql.connect("test.sqlite")
     # con.row_factory = sql.Row
 
     cur = con.cursor()
-    cur.execute("select * from calgary")
+    cur.execute("SELECT * FROM calgary")
+    # cur.execute("SELECT json_agg(t) FROM (SELECT * FROM calgary)t")
+    # cur.execute("SELECT json_agg(t) FROM (SELECT cl.price, cl.address, cl.postal_code, cl.bed, cl.full_bath, cl.half_bath, cl.property_area, cl.property_type, s.walk_score, s.bike_score, s.transit_score, coord.lat, coord.long FROM calgary_df AS cl JOIN score_df AS s ON cl.postal_code = s.postal_code JOIN coordinates_df AS coord ON s.postal_code = coord.postal_codes WHERE cl.price < 1000000 AND cl.property_area < 4000 AND s.walk_score > 5 AND s.bike_score > 0 AND s.transit_score > 0)t")
+
 
     list_data = cur.fetchall()
-    # print(rows)
+    # print(list_data)
     return list_data
 
 
 @app.route('/')
 def home():
     rows = listings()
-    # print(rows)
+    print(rows)
     return render_template("index.html", row=[i for i in rows])
 
 
